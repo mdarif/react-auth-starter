@@ -1,5 +1,4 @@
-import { testRoute } from './testRoute';
+import { testRoute } from './testRoute'
+import { signUpRoute } from './signUpRoute'
 
-export const routes = [
-    testRoute,
-];
+export const routes = [signUpRoute, testRoute]
