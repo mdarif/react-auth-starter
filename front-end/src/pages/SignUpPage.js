@@ -14,7 +14,7 @@ export const SignUpPage = () => {
   const history = useHistory()
 
   const onSignUpClicked = async () => {
-    // Send the data to the server
+    // Send the data to the server with required values
     const response = await axios.post('/api/signup', {
       email: emailValue,
       password: passwordValue
