@@ -68,9 +68,9 @@ export const UserInfoPage = () => {
   }
 
   const logOut = () => {
-    // We'll want to log the user out here
-    // and send them to the "login page"
-    alert('Log out functionality not implemented yet')
+    // Delete the JWT token from local storage
+    localStorage.removeItem('token')
+    history.push('/login') // Navigate the user to the login page
   }
 
   const resetValues = () => {
