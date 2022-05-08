@@ -19,7 +19,6 @@ export const loginRoute = {
     if (!user) return res.sendStatus(401)
 
     // Get the details from the user received from the database
-    console.log('user>>>>>>>', user)
     const { _id: id, isVerified, passwordHash, info } = user
 
     // Compare the password from the request body with the password from the database
