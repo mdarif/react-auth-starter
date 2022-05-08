@@ -10,6 +10,7 @@ export const UserInfoPage = () => {
   const [token, setToken] = useToken()
 
   // Destructure the user info
+  // console.log('user', user)
   const { id, email, info, isVerified } = user
 
   // We'll use the history to navigate the user
@@ -84,7 +85,13 @@ export const UserInfoPage = () => {
   // And here we have the JSX for our component. It's pretty straightforward
   return (
     <div className='content-container'>
-      <h1>Info for {info.email}</h1>
+      <h1>Info for {email}</h1>
+      {!isVerified && (
+        <div className='fail'>
+          You won't be able to make any changes until you verify your email
+        </div>
+      )}
+
       {showSuccessMessage && (
         <div className='success'>Successfully saved user data!</div>
       )}

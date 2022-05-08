@@ -25,7 +25,7 @@ export const SignUpPage = () => {
     setToken(token)
 
     // Redirect to the home page
-    history.push('/')
+    history.push('/please-verify')
   }
 
   return (

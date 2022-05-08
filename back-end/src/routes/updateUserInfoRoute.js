@@ -39,7 +39,7 @@ export const updateUserInfoRoute = {
       console.log('decoded', decoded)
 
       // If the token is valid, get the id from the token
-      const { id } = decoded
+      const { id, isVerified } = decoded
       console.log('decoded id', id, ' userId', userId)
 
       // In case id don't match with the userId from the request param, return error to the client
@@ -47,6 +47,11 @@ export const updateUserInfoRoute = {
         return res
           .status(403)
           .json({ message: "Not allowed to update that user's data." })
+
+      if (!isVerified)
+        return res.status(403).json({
+          message: 'Please verify your email before you update the data.'
+        })
     })
 
     // If the id and userId from the request param match, update the user info
@@ -65,7 +70,7 @@ export const updateUserInfoRoute = {
     console.log('result', result)
 
     // If the user info is updated, return the updated user info to the client
-    const { _id: id, email, isVerified, info } = result.value
+    const { email, info } = result.value
 
     console.log('Before jwt.sign', email, isVerified, info)
     /**
