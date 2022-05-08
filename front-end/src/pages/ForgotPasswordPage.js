@@ -3,42 +3,41 @@ import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 
 export const ForgotPasswordPage = () => {
-  const [emailValue, setEmailValue] = useState('')
-  const [success, setSuccess] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [email, setEmail] = useState('')
 
   const history = useHistory()
 
-  const onSubmitClicked = async () => {
+  const onForgotPasswordClicked = async () => {
     try {
-      await axios.post(`/api/forgot-password/${emailValue}`)
-      setSuccess(true)
+      await axios.put(`/api/forgot-password/${email}`)
+      setIsSuccess(true)
       setTimeout(() => {
         history.push('/login')
       }, 3000)
     } catch (e) {
-      setErrorMessage(e.message)
+      setErrorMessage('Uh oh... something went wrong')
     }
   }
 
-  return success ? (
+  return isSuccess ? (
     <div className='content-container'>
-      <h1>Success</h1>
+      <h1>Success!</h1>
       <p>Check your email for a reset link</p>
     </div>
   ) : (
     <div className='content-container'>
       <h1>Forgot Password</h1>
       <p>Enter your email and we'll send you a reset link</p>
-      {errorMessage && <div className='fail'>{errorMessage}</div>}
+      {errorMessage && <div>{errorMessage}</div>}
       <input
-        type='text'
-        value={emailValue}
-        onChange={e => setEmailValue(e.target.value)}
+        value={email}
         placeholder='someone@gmail.com'
+        onChange={e => setEmail(e.target.value)}
       />
-      <button disabled={!emailValue} onClick={onSubmitClicked}>
-        Send Reset Link
+      <button disabled={!email} onClick={onForgotPasswordClicked}>
+        Send Reset Email
       </button>
     </div>
   )
