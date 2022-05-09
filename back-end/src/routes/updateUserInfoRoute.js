@@ -72,7 +72,7 @@ export const updateUserInfoRoute = {
     // If the user info is updated, return the updated user info to the client
     const { email, info } = result.value
 
-    console.log('Before jwt.sign', email, isVerified, info)
+    // console.log('Before jwt.sign', email, isVerified, info)
     /**
      * jwt.sign(payload, secretOrPrivateKey, [options, callback])
      */

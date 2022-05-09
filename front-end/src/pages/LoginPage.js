@@ -2,17 +2,26 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useToken } from '../auth/useToken'
+import { useQueryParams } from '../util/useQueryParams'
 
 export const LoginPage = () => {
-  const [token, setToken] = useToken()
+  const [, setToken] = useToken()
 
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage] = useState('')
   const [emailValue, setEmailValue] = useState('')
   const [passwordValue, setPasswordValue] = useState('')
 
   const [googleOauthUrl, setGoogleOauthUrl] = useState('')
+  const { token: oauthToken } = useQueryParams()
 
   const history = useHistory()
+
+  useEffect(() => {
+    if (oauthToken) {
+      setToken(oauthToken)
+      history.push('/')
+    }
+  }, [oauthToken, setToken, history])
 
   useEffect(() => {
     const loadOauthUrl = async () => {
@@ -75,7 +84,7 @@ export const LoginPage = () => {
         disabled={!googleOauthUrl}
         onClick={() => (window.location.href = googleOauthUrl)}
       >
-        Log in with Google
+        Sign-in with Google
       </button>
     </div>
   )
