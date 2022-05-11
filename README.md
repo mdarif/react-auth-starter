@@ -119,8 +119,5 @@ Give a ⭐️ if this project helped you!
 
 ## 📝 License
 
-Copyright © 2022 [Mohammad Arif](https://github.com/mdarif).<br />
+Copyright © 2022 [Mohammad Arif](https://github.com/mdarif).  
 This project is [MIT](https://github.com/git/git-scm.com/blob/main/MIT-LICENSE.txt) licensed.
-
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
