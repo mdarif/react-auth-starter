@@ -19,10 +19,14 @@ export const loginRoute = {
     if (!user) return res.sendStatus(401)
 
     // Get the details from the user received from the database
-    const { _id: id, isVerified, passwordHash, info } = user
+    const { _id: id, isVerified, passwordHash, salt, info } = user
+    const pepper = process.env.PEPPER_STRING
 
     // Compare the password from the request body with the password from the database
-    const isCorrect = await bcrypt.compare(password, passwordHash)
+    const isCorrect = await bcrypt.compare(
+      salt + password + pepper,
+      passwordHash
+    )
 
     if (isCorrect) {
       // Generate a token

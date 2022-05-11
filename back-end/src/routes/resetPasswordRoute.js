@@ -11,12 +11,16 @@ export const resetPasswordRoute = {
 
     const db = getDbConnection('react-auth-db')
 
-    const newPasswordHash = await bcrypt.hash(newPassword, 10)
+    // Salt and Pepper the password
+    const newSalt = uuid()
+    const pepper = process.env.PEPPER_STRING
+
+    const newPasswordHash = await bcrypt.hash(salt + newPassword + pepper, 10)
 
     const result = await db.collection('users').findOneAndUpdate(
       { passwordResetCode },
       {
-        $set: { passwordHash: newPasswordHash },
+        $set: { passwordHash: newPasswordHash, salt: newSalt },
         $unset: { passwordResetCode: '' }
       }
     )

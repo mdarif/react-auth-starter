@@ -20,8 +20,12 @@ export const signUpRoute = {
     // if user exists, return error to the client
     if (user) res.sendStatus(409) // 409: conflict
 
+    // Salt and Pepper the password
+    const salt = uuid()
+    const pepper = process.env.PEPPER_STRING
+
     // Encrypt password
-    const passwordHash = await bcrypt.hash(password, 10) // 10 is the number of rounds
+    const passwordHash = await bcrypt.hash(salt + password + pepper, 10) // 10 is the number of rounds
 
     const verificationString = uuid()
 
@@ -35,6 +39,7 @@ export const signUpRoute = {
     const result = await db.collection('users').insertOne({
       email,
       passwordHash,
+      salt,
       verificationString,
       info: startingInfo,
       isVerified: false
