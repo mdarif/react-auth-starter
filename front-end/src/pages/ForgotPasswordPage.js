@@ -5,16 +5,16 @@ import axios from 'axios'
 export const ForgotPasswordPage = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
-  const [email, setEmail] = useState('')
+  const [emailValue, setEmailValue] = useState('')
 
   const history = useHistory()
 
   const onForgotPasswordClicked = async () => {
     try {
-      await axios.put(`/api/forgot-password/${email}`)
+      await axios.put(`/api/forgot-password/${emailValue}`)
       setIsSuccess(true)
       setTimeout(() => {
-        history.push('/login')
+        history.push(`/reset-password?email=${encodeURIComponent(emailValue)}`)
       }, 3000)
     } catch (e) {
       setErrorMessage('Uh oh... something went wrong')
@@ -32,12 +32,12 @@ export const ForgotPasswordPage = () => {
       <p>Enter your email and we'll send you a reset link</p>
       {errorMessage && <div>{errorMessage}</div>}
       <input
-        value={email}
+        value={emailValue}
         placeholder='someone@gmail.com'
-        onChange={e => setEmail(e.target.value)}
+        onChange={e => setEmailValue(e.target.value)}
       />
-      <button disabled={!email} onClick={onForgotPasswordClicked}>
-        Send Reset Email
+      <button disabled={!emailValue} onClick={onForgotPasswordClicked}>
+        Send Reset Link
       </button>
     </div>
   )

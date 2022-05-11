@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { PrivateRoute } from './auth/PrivateRoute'
+import { EmailVerificationCodePage } from './pages/EmailVerificationCodePage'
 import { EmailVerificationLandingPage } from './pages/EmailVerificationLandingPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
 import { LoginPage } from './pages/LoginPage'
@@ -15,13 +16,16 @@ export const Routes = () => {
         <PrivateRoute path='/' exact>
           <UserInfoPage />
         </PrivateRoute>
+        <Route path='/verify-email' exact>
+          <EmailVerificationCodePage />
+        </Route>
         <Route path='/verify-email/:verificationString'>
           <EmailVerificationLandingPage />
         </Route>
         <Route path='/forgot-password'>
           <ForgotPasswordPage />
         </Route>
-        <Route path='/reset-password/:passwordResetCode'>
+        <Route path='/reset-password'>
           <PasswordResetLandingPage />
         </Route>
         <Route path='/login'>

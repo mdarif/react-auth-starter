@@ -1,43 +1,56 @@
 import { ObjectID } from 'mongodb'
 import jwt from 'jsonwebtoken'
 import { getDbConnection } from '../db'
+import { CognitoUser } from 'amazon-cognito-identity-js'
+import { awsUserPool } from '../util/awsUserPool'
 
 export const verifyEmailRoute = {
   path: '/api/verify-email',
   method: 'put',
   handler: async (req, res) => {
     // Check and see the authorization header is included
-    const { verificationString } = req.body
-    // DB connection
-    const db = getDbConnection('react-auth-db')
-    // Find the user with the verification string
-    const result = await db.collection('users').findOne({
-      verificationString
-    })
+    const { email, verificationString } = req.body
 
-    // If there is no user with the verification string, return error to the client
-    if (!result)
-      return res
-        .status(401)
-        .json({ message: 'Email verification code is incorrect' })
+    console.log('req.body', req.body)
 
-    const { _id: id, email, info } = result
+    new CognitoUser({ Username: email, Pool: awsUserPool }).confirmRegistration(
+      verificationString,
+      true,
+      async err => {
+        if (err)
+          return res
+            .status(401)
+            .json({ message: 'The email verification is incorrect' })
 
-    await db.collection('users').updateOne(
-      { _id: ObjectID(id) },
-      {
-        $set: { isVerified: true }
-      }
-    )
+        const db = getDbConnection('react-auth-db')
+        const result = await db.collection('users').findOneAndUpdate(
+          { email },
+          {
+            $set: { isVerified: true }
+          },
+          {
+            returnOriginal: false
+          }
+        )
 
-    // Send the user info to the client
-    jwt.sign(
-      { id, email, isVerified: true, info },
-      process.env.JWT_SECRET,
-      { expiresIn: '2d' },
-      (err, token) => {
-        if (err) return res.sendStatus(500)
-        res.status(200).json({ token })
+        console.log('result.value', result.value)
+        const { _id: id, info } = result.value
+
+        // Send the user info to the client
+        jwt.sign(
+          { id, email, isVerified: true, info },
+          process.env.JWT_SECRET,
+          { expiresIn: '2d' },
+          (err, token) => {
+            console.log('token in jwt.sign', token)
+            if (err) {
+              console.log('err', err)
+              console.log('res', res)
+              return res.sendStatus(500)
+            }
+            res.status(200).json({ token })
+          }
+        )
       }
     )
   }

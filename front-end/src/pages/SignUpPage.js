@@ -25,7 +25,7 @@ export const SignUpPage = () => {
     setToken(token)
 
     // Redirect to the home page
-    history.push('/please-verify')
+    history.push(`/please-verify?email=${encodeURIComponent(emailValue)}`)
   }
 
   return (

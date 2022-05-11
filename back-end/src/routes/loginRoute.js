@@ -1,6 +1,13 @@
-import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { getDbConnection } from '../db'
+import {
+  AuthenticationDetails,
+  CognitoUserPool,
+  CognitoUser,
+  CognitoUserAttribute
+} from 'amazon-cognito-identity-js'
+
+import { awsUserPool } from '../util/awsUserPool'
 
 export const loginRoute = {
   path: '/api/login',
@@ -9,44 +16,46 @@ export const loginRoute = {
     // Get the email and password from the request body
     const { email, password } = req.body
 
-    // Get a connection to the database
-    const db = getDbConnection('react-auth-db')
+    new CognitoUser({ Username: email, Pool: awsUserPool }).authenticateUser(
+      new AuthenticationDetails({ Username: email, Password: password }),
+      {
+        onSuccess: async result => {
+          // If the password is correct, get the user info from the database and send it back to them in the form of JWT
 
-    // Check if user exists
-    const user = await db.collection('users').findOne({ email })
+          // Get a connection to the database
+          const db = getDbConnection('react-auth-db')
 
-    // If user doesn't exist, return error to the client
-    if (!user) return res.sendStatus(401)
+          // Check if user exists
+          const user = await db.collection('users').findOne({ email })
 
-    // Get the details from the user received from the database
-    const { _id: id, isVerified, passwordHash, info } = user
+          // Get the details from the user received from the database
+          const { _id: id, isVerified, info } = user
 
-    // Compare the password from the request body with the password from the database
-    const isCorrect = await bcrypt.compare(password, passwordHash)
-
-    if (isCorrect) {
-      // Generate a token
-      jwt.sign(
-        {
-          id,
-          email,
-          info,
-          isVerified
+          // Generate a JWT
+          jwt.sign(
+            {
+              id,
+              email,
+              info,
+              isVerified
+            },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: '2d'
+            },
+            (err, token) => {
+              if (err) {
+                return res.sendStatus(500)
+              }
+              res.status(200).json({ token })
+            }
+          )
         },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: '2d'
-        },
-        (err, token) => {
-          if (err) {
-            return res.status(500).send(err)
-          }
-          res.status(200).json({ token })
+        onFailure: err => {
+          console.log('err', err)
+          res.sendStatus(401)
         }
-      )
-    } else {
-      // If password is incorrect, return error to the client
-      res.sendStatus(401)
-    }
+      }
+    )
   }
 }
