@@ -26,10 +26,9 @@
 * Authorization = "Is this user allowed to do what they're trying to do?"
 
 
-
 ## Strategies for User Auth:
 
-# Knowledge-based auth - 
+### Knowledge-based auth:
 	- Examples:
 		- passwords
 		- PINs
@@ -40,7 +39,7 @@
 		- users can forget
 		- Sometimes googleable (for security questions)
 		
-# Ownership-based auth -
+### Ownership-based auth:
 	- Examples:
 		- User owns an email address
 		- Cell phone
@@ -52,7 +51,7 @@
 
 * Multi-factor auth - combines knowledge- and ownership-based strategies
 
-# Biology-based Authentication
+### Biology-based Authentication:
 	- Examples:
 		- Facial recognition
 		- Fingerprints
@@ -64,15 +63,17 @@
 - Strings that users get from our server when they successfully authenticate
 - Encoded JSON objects that contain basic user info
 	* Encoded !== Encrypted - 3rd parties can see all the data they contain!
-	{
-		"userId": "12345",
-		"email": "arif@test.com",
-		"permissionsLevel": "admin",
-	}
+  ```json
+      {
+        "userId": "12345",
+        "email": "arif@test.com",
+        "permissionsLevel": "admin",
+      }
+    ```
 - JWTs are PRIVATE! Treat them with care
 
 
-# The JWT Flow:
+### The JWT Flow:
 
 1. The user logs in successfully (with username and password)
 2. The server uses a secret key to generate a JWT w/ the user's info
