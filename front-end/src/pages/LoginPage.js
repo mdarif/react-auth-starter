@@ -7,7 +7,7 @@ import { useQueryParams } from '../util/useQueryParams'
 export const LoginPage = () => {
   const [, setToken] = useToken()
 
-  const [errorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const [emailValue, setEmailValue] = useState('')
   const [passwordValue, setPasswordValue] = useState('')
 
@@ -38,20 +38,25 @@ export const LoginPage = () => {
   }, [])
 
   const onLoginClicked = async () => {
-    // Send the data to the server with required values
-    const response = await axios.post('/api/login', {
-      email: emailValue,
-      password: passwordValue
-    })
+    try {
+      // Send the data to the server with required values
+      const response = await axios.post('/api/login', {
+        email: emailValue,
+        password: passwordValue
+      })
 
-    // Save the data from the server in the token
-    const { token } = response.data
+      // Save the data from the server in the token
+      const { token } = response.data
 
-    // Set the token in local storage
-    setToken(token)
+      // Set the token in local storage
+      setToken(token)
 
-    // Redirect to the home page
-    history.push('/')
+      // Redirect to the home page
+      history.push('/')
+    } catch (e) {
+      // If the login is incorrect, set the error message
+      setErrorMessage(e.message)
+    }
   }
 
   return (

@@ -43,7 +43,7 @@ export const loginRoute = {
         },
         (err, token) => {
           if (err) {
-            return res.status(500).send(err)
+            res.sendStatus(500)
           }
           res.status(200).json({ token })
         }
